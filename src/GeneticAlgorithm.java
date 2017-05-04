@@ -144,19 +144,22 @@ public class GeneticAlgorithm {
     //the process whilst selecting the minimum connections between rails)
     public void guideRailSelection() {
             int max=0,maxAmounts=0,check;
+            //finding the biggest rail and times that can be used
             for(int i=0;i<railSizes.size();i++){
                 if(max<railSizes.get(i)){
                     max=railSizes.get(i);
                     maxAmounts=railAmounts.get(i);
                 }
             }
-            //check:poses fores mporw na parw tin megaluterh swlhna
+            //check:how many times I could use the biggest rail
             check=railLength/max;
-            
-            for(int i=0;i<maxAmounts;i++){
-                if(maxAmounts<check)
-                    check-=2;
+            switch(maxAmounts){
+                case 1: 
+                case 2: 
+                case 3:check=maxAmounts;break;
+                default:check=maxAmounts--; 
             }
+            
             
     }
     
