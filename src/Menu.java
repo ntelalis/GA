@@ -11,10 +11,16 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 
 public class Menu {
     public static void main(String[] args)throws IOException{
-        String path = "C:\\Users\\shadowalker\\Desktop\\test.txt";
+        
+        String path = Paths.get(".").toAbsolutePath().normalize().toString();
+        if(System.getProperty("os.name").contains("indows"))
+            path +="\\src\\sources\\test.txt";
+        else
+            path += "/src/sources/test.txt";
         
         GeneticAlgorithm ga = new GeneticAlgorithm(path);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
