@@ -140,13 +140,25 @@ public class GeneticAlgorithm {
         this.fileToLoad = fileToLoad;
     }
     
+    //forcing the algorithm to use the biggest rail x times(in order to speed up
+    //the process whilst selecting the minimum connections between rails)
     public void guideRailSelection() {
+            int max=0,maxAmounts=0,check;
+            for(int i=0;i<railSizes.size();i++){
+                if(max<railSizes.get(i)){
+                    max=railSizes.get(i);
+                    maxAmounts=railAmounts.get(i);
+                }
+            }
+            //check:poses fores mporw na parw tin megaluterh swlhna
+            check=railLength/max;
             
-            //for(int i=0;i<railSizes.size();i++){
-            //    max
-            //}
-            //railSizes
-        }
+            for(int i=0;i<maxAmounts;i++){
+                if(maxAmounts<check)
+                    check-=2;
+            }
+            
+    }
     
     
     
