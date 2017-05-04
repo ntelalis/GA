@@ -143,24 +143,32 @@ public class GeneticAlgorithm {
     //forcing the algorithm to use the biggest rail x times(in order to speed up
     //the process whilst selecting the minimum connections between rails)
     public void guideRailSelection() {
-            int max=0,maxAmounts=0,check;
-            //finding the biggest rail and times that can be used
-            for(int i=0;i<railSizes.size();i++){
-                if(max<railSizes.get(i)){
-                    max=railSizes.get(i);
-                    maxAmounts=railAmounts.get(i);
-                }
+        int max=0,maxAmounts=0,check,index=0;
+        //finding the biggest rail and times that can be used
+        for(int i=0;i<railSizes.size();i++){
+            if(max<railSizes.get(i)){
+                max=railSizes.get(i);
+                maxAmounts=railAmounts.get(i);
+                index=i;
             }
-            //check:how many times I could use the biggest rail
-            check=railLength/max;
-            switch(maxAmounts){
-                case 1: 
-                case 2: 
-                case 3:check=maxAmounts;break;
-                default:check=maxAmounts--; 
+        }
+        //check:how many times I could use the biggest rail
+        check=railLength/max;
+        //forcedTimesToBeUsed:the times I choose to use the rail(therefore
+        //I remove from the available maxAmount. I leave the remaining amount
+        //of rails for the algorithm to choose-always 2)
+        int forcedTimesToBeUsed=0;
+        if(maxAmounts>=3){
+            forcedTimesToBeUsed=maxAmounts-2;
+            if(forcedTimesToBeUsed<=check-2)
+                railAmounts.set(index,maxAmounts-forcedTimesToBeUsed);
+            else{
+                forcedTimesToBeUsed=check-2;
+                railAmounts.set(index,maxAmounts-forcedTimesToBeUsed);
             }
-            
-            
+        }
+        //}
+        
     }
     
     
@@ -230,5 +238,5 @@ public class GeneticAlgorithm {
         }
         return genes;
     }
-
+    
 }
