@@ -2,6 +2,7 @@
 import org.jgap.Configuration;
 import org.jgap.DefaultFitnessEvaluator;
 import org.jgap.InvalidConfigurationException;
+import org.jgap.audit.EvolutionMonitor;
 import org.jgap.event.EventManager;
 import org.jgap.impl.ChromosomePool;
 import org.jgap.impl.CrossoverOperator;
@@ -32,6 +33,7 @@ public class MyConfiguration extends Configuration{
         try{
             setBreeder(new GABreeder());
             setRandomGenerator(new StockRandomGenerator());
+            setMonitor(new EvolutionMonitor());
             setEventManager(new EventManager());
             if(sMethod==Selection.Tournament){
                 TournamentSelector tournamentSelector=new TournamentSelector(this,5,1);
