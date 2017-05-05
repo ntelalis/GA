@@ -266,8 +266,10 @@ public class GeneticAlgorithm {
             bestSolution = population.getFittestChromosome();
             
             //fix The Chromosome if needed
-            if(guidedRailSelectionChecker)
+            if(guidedRailSelectionChecker){
                 fixChromosome(index,forcedTimesToBeUsed);
+            }
+                
         }
         catch(InvalidConfigurationException ex){
             Logger.getLogger(GeneticAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
@@ -275,12 +277,11 @@ public class GeneticAlgorithm {
         
     }
     
-    public void fixChromosome(int index, int value){
+    public void fixChromosome(int index, int value) throws InvalidConfigurationException{
        fixedChromosome=(IChromosome)bestSolution.clone();
        int totalAmount=railAmounts.get(index)+value;
-       
-       //fixedChromosome.getGene(index)=new IntegerGene(gaConf,0,totalAmount);
-       fixedChromosome.getGene(index).setAllele(value);
+       fixedChromosome.getGenes()[index] = new IntegerGene(gaConf,0,totalAmount);       //fixedChromosome.getGenes(); .setGene(index)=new IntegerGene(gaConf,0,totalAmount);
+       fixedChromosome.getGene(index).setAllele(totalAmount);
     }
     
     
