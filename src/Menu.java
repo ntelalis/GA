@@ -26,26 +26,21 @@ public class Menu {
         else
             path += "/src/sources/test.txt";
         
+        
         GeneticAlgorithm ga = new GeneticAlgorithm(path);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
-        
-        System.out.print("Do you want to use Adamidis's knowledge?? xD(T / R)[R]: ");
+        boolean check1=false;
+        System.out.print("Do you want to use Adamidis' knowledge?? xD(Y / N)[N]: ");
         String selection;
         do{
             selection=br.readLine().toUpperCase();
-            if(selection.equals("T"))
-                ga.setSelection(Selection.Tournament);
-            else if(selection.equals("R"))
-                ga.setSelection(Selection.Roulette);
-            else
-                ga.setSelection(Selection.Roulette);
-            //System.out.println("Give your choice again:");
-        }while(!(selection.equals("T") || selection.equals("R") || selection.equals("")));
-        //}while(!(selection.equals("T") || selection.equals("R")));
+            if(selection.equals("Y"))
+                check1 = ga.guideRailSelection();
+        }while(!(selection.equals("Y") || selection.equals("N") || selection.equals("")));
         
         //boolean check1=false;
-        boolean check1 = ga.guideRailSelection();
+        //boolean check1 = ga.guideRailSelection();
         
         
         System.out.print("Set the generation Limit(1000): ");
@@ -68,7 +63,7 @@ public class Menu {
         }
         
         System.out.print("Which selection method you want to use?(T / R)[R]: ");
-        String selection;
+        //String selection;
         do{
             selection=br.readLine().toUpperCase();
             if(selection.equals("T"))
@@ -104,7 +99,7 @@ public class Menu {
             GeneticAlgorithm.setRailAmountElement(ga.getIndex(), ga.getForcedTimesToBeUsed());
             
             
-            
+            System.out.println("Total Time="+ga.getTimePassed()+"ms");
             System.out.println("Fitness="+ga.getFittestChromosomeFitness());
             System.out.println("Total Length="+ga.getRailLength());
             System.out.println("Intersections="+(ga.getFittestChromosomeRailPoints()+ga.getForcedTimesToBeUsed()));
@@ -120,6 +115,7 @@ public class Menu {
             System.out.println("]");
         }
         else{
+            System.out.println("Total Time="+ga.getTimePassed()+"ms");
             System.out.println("Fitness="+ga.getFittestChromosomeFitness());
             System.out.println("Total Length="+ga.getFittestChromosomeRailLength());
             System.out.println("Intersections="+(ga.getFittestChromosomeRailPoints()));

@@ -36,10 +36,13 @@ public class GeneticAlgorithm {
     private int railLength;
     private static ArrayList<Integer> railSizes,railAmounts;
     private String fileToLoad;
-    
+    private long timePassed=0;
     private boolean elitismEnabled = false;
     
-    
+    //guideRailSelection variables
+    private int index=0;
+    private int lengthOfMyUsedRails=0;
+    private int forcedTimesToBeUsed;
     
     public GeneticAlgorithm(String fileToLoad){
         
@@ -62,6 +65,26 @@ public class GeneticAlgorithm {
         } catch (IOException ex) {
             Logger.getLogger(GeneticAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getForcedTimesToBeUsed() {
+        return forcedTimesToBeUsed;
+    }
+
+    public int getLengthOfMyUsedRails() {
+        return lengthOfMyUsedRails;
+    }
+
+    public void setLengthOfMyUsedRails(int lengthOfMyUsedRails) {
+        this.lengthOfMyUsedRails = lengthOfMyUsedRails;
     }
     
     public boolean isElitismEnabled() {
@@ -131,6 +154,20 @@ public class GeneticAlgorithm {
     public static ArrayList<Integer> getRailAmounts() {
         return railAmounts;
     }
+
+    public static void setRailAmounts(ArrayList<Integer> railAmounts) {
+        GeneticAlgorithm.railAmounts = railAmounts;
+    }
+    
+    public static void setRailAmountElement(int index, int value){
+        railAmounts.set(index, railAmounts.get(index) + value);
+    }
+
+    public long getTimePassed() {
+        return timePassed;
+    }
+    
+    
     
     public String getFileToLoad() {
         return fileToLoad;
@@ -142,8 +179,9 @@ public class GeneticAlgorithm {
     
     //forcing the algorithm to use the biggest rail x times(in order to speed up
     //the process whilst selecting the minimum connections between rails)
-    public void guideRailSelection() {
-        int max=0,maxAmounts=0,check,index=0;
+    public boolean guideRailSelection() {
+        int max=0,maxAmounts=0,check;
+        boolean flag=false;
         //finding the biggest rail and times that can be used
         for(int i=0;i<railSizes.size();i++){
             if(max<railSizes.get(i)){
@@ -153,22 +191,26 @@ public class GeneticAlgorithm {
             }
         }
         //check:how many times I could use the biggest rail
-        check=railLength/max;
         //forcedTimesToBeUsed:the times I choose to use the rail(therefore
         //I remove from the available maxAmount. I leave the remaining amount
         //of rails for the algorithm to choose-always 2)
-        int forcedTimesToBeUsed=0;
+        check=railLength/max;
         if(maxAmounts>=3){
+            flag=true;
             forcedTimesToBeUsed=maxAmounts-2;
-            if(forcedTimesToBeUsed<=check-2)
+            if(forcedTimesToBeUsed<=check-2){
                 railAmounts.set(index,maxAmounts-forcedTimesToBeUsed);
+                lengthOfMyUsedRails=forcedTimesToBeUsed*max;
+                railLength-=lengthOfMyUsedRails;
+            }
             else{
                 forcedTimesToBeUsed=check-2;
                 railAmounts.set(index,maxAmounts-forcedTimesToBeUsed);
+                lengthOfMyUsedRails=forcedTimesToBeUsed*max;
+                railLength-=lengthOfMyUsedRails;
             }
         }
-        //}
-        
+        return flag;
     }
     
     
@@ -200,9 +242,11 @@ public class GeneticAlgorithm {
             
             population = Genotype.randomInitialGenotype(gaConf);
             
+            timePassed = System.currentTimeMillis();
             for(int i=0;i<generationLimit;i++){
                 population.evolve();
             }
+            timePassed = System.currentTimeMillis() - timePassed;
             bestSolution = population.getFittestChromosome();
         }
         catch(InvalidConfigurationException ex){
@@ -211,8 +255,10 @@ public class GeneticAlgorithm {
         
     }
     
+    
     public double getFittestChromosomeFitness(){
         return bestSolution.getFitnessValue();
+        
     }
     
     public int getFittestChromosomeRailLength(){
