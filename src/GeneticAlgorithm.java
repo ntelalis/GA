@@ -25,7 +25,7 @@ public class GeneticAlgorithm {
     //Algorithm variables
     private int generationLimit;
     private int populationSize;
-    private FitnessFunction myFitnessFunction;
+    private MyFitnessFunction myFitnessFunction;
     private Genotype population;
     private IChromosome bestSolution;
     private Selection selection = Selection.Roulette;
@@ -268,6 +268,10 @@ public class GeneticAlgorithm {
             //fix The Chromosome if needed
             if(guidedRailSelectionChecker){
                 fixChromosome(index,forcedTimesToBeUsed);
+                
+                railLength=(getChromosomeRailLength(bestSolution)+lengthOfMyUsedRails);
+
+                myFitnessFunction.setRailLength(railLength);
             }
                 
         }
@@ -279,10 +283,14 @@ public class GeneticAlgorithm {
     
     public void fixChromosome(int index, int value) throws InvalidConfigurationException{
        fixedChromosome=(IChromosome)bestSolution.clone();
-       int totalAmount=railAmounts.get(index)+value;
-       fixedChromosome.getGenes()[index] = new IntegerGene(gaConf,0,totalAmount);       //fixedChromosome.getGenes(); .setGene(index)=new IntegerGene(gaConf,0,totalAmount);
+       int totalAmount=((Integer)fixedChromosome.getGene(index).getAllele()).intValue()+value;
+       fixedChromosome.getGenes()[index] = new IntegerGene(gaConf,0,totalAmount);
+       
        fixedChromosome.getGene(index).setAllele(totalAmount);
+       
+       //fixedChromosome.setFitnessValue(myFitnessFunction.evaluate(fixedChromosome));
     }
+    
     
     
     public double getFittestChromosomeFitness(){
@@ -290,18 +298,18 @@ public class GeneticAlgorithm {
         
     }
     
-    public int getFittestChromosomeRailLength(){
+    public int getChromosomeRailLength(IChromosome chromosome){
         int length = 0;
-        for(int i=0;i<bestSolution.getGenes().length;i++){
-            length += railSizes.get(i)*((Integer)bestSolution.getGene(i).getAllele()).intValue();
+        for(int i=0;i<chromosome.getGenes().length;i++){
+            length += railSizes.get(i)*((Integer)chromosome.getGene(i).getAllele()).intValue();
         }
         return length;
     }
     
-    public int getFittestChromosomeRailPoints(){
+    public int getChromosomeRailPoints(IChromosome chromosome){
         int points = 0;
-        for(int i=0;i<bestSolution.getGenes().length;i++){
-            points+=((Integer)bestSolution.getGene(i).getAllele()).intValue();
+        for(int i=0;i<chromosome.getGenes().length;i++){
+            points+=((Integer)chromosome.getGene(i).getAllele()).intValue();
         }
         return --points;
     }
