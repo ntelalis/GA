@@ -37,8 +37,6 @@ public class GeneticAlgorithm {
     private double maxFitness=-1;
     private int noImprovementGenerations=0;
     private int percentOfChangeOperatorChance;
-
-    
     
     //Problem variables
     private int railLength;
@@ -95,7 +93,7 @@ public class GeneticAlgorithm {
     public void setPercentOfChangeOperatorChance(int percentOfChangeOperatorChance) {
         this.percentOfChangeOperatorChance = percentOfChangeOperatorChance;
     }
-    
+
     public int getIndex() {
         return index;
     }
@@ -295,12 +293,11 @@ public class GeneticAlgorithm {
         
     }
     
-    public void fixChromosome(int index, int value){
+    public void fixChromosome(int index, int value) throws InvalidConfigurationException{
        fixedChromosome=(IChromosome)bestSolution.clone();
        int totalAmount=railAmounts.get(index)+value;
-       
-       //fixedChromosome.getGene(index)=new IntegerGene(gaConf,0,totalAmount);
-       fixedChromosome.getGene(index).setAllele(value);
+       fixedChromosome.getGenes()[index] = new IntegerGene(gaConf,0,totalAmount);       //fixedChromosome.getGenes(); .setGene(index)=new IntegerGene(gaConf,0,totalAmount);
+       fixedChromosome.getGene(index).setAllele(totalAmount);
     }
     
     
