@@ -36,7 +36,7 @@ public class Menu {
         do{
             selection=br.readLine().toUpperCase();
             if(selection.equals("Y"))
-                check1 = ga.guideRailSelection();
+                ga.guidedRailSelection();
         }while(!(selection.equals("Y") || selection.equals("N") || selection.equals("")));
         
         //boolean check1=false;
@@ -104,12 +104,12 @@ public class Menu {
             System.out.println("Total Length="+ga.getRailLength());
             System.out.println("Intersections="+(ga.getFittestChromosomeRailPoints()+ga.getForcedTimesToBeUsed()));
             System.out.print("Chromosome=[ ");
-            for(int i=0;i<ga.getFittestChromosome().length;i++){
+            for(int i=0;i<ga.getFittestChromosomeAsIntArray().length;i++){
                 if(i==ga.getIndex()){
-                    System.out.print((ga.getFittestChromosome()[i]+ga.getForcedTimesToBeUsed())+" ");
+                    System.out.print((ga.getFittestChromosomeAsIntArray()[i]+ga.getForcedTimesToBeUsed())+" ");
                 }
                 else{
-                    System.out.print(ga.getFittestChromosome()[i]+" ");
+                    System.out.print(ga.getFittestChromosomeAsIntArray()[i]+" ");
                 }
             }
             System.out.println("]");
@@ -120,8 +120,8 @@ public class Menu {
             System.out.println("Total Length="+ga.getFittestChromosomeRailLength());
             System.out.println("Intersections="+(ga.getFittestChromosomeRailPoints()));
             System.out.print("Chromosome=[ ");
-            for(int i=0;i<ga.getFittestChromosome().length;i++){
-                System.out.print(ga.getFittestChromosome()[i]+" ");
+            for(int i=0;i<ga.getFittestChromosomeAsIntArray().length;i++){
+                System.out.print(ga.getFittestChromosomeAsIntArray()[i]+" ");
             }
             System.out.println("]");
             
