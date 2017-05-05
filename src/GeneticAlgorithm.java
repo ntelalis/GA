@@ -31,6 +31,7 @@ public class GeneticAlgorithm {
     private Selection selection = Selection.Roulette;
     private int mutationChance;
     private int recombinationChance;
+    private Configuration gaConf;
     
     //Problem variables
     private int railLength;
@@ -43,6 +44,10 @@ public class GeneticAlgorithm {
     private int index=0;
     private int lengthOfMyUsedRails=0;
     private int forcedTimesToBeUsed;
+    public boolean guidedRailSelectionChecker=false;
+    
+    //fix the chromosome's fittness
+    private IChromosome fixedChromosome;
     
     public GeneticAlgorithm(String fileToLoad){
         
@@ -67,6 +72,16 @@ public class GeneticAlgorithm {
         }
     }
 
+    public IChromosome getFixedChromosome() {
+        return fixedChromosome;
+    }
+
+    public void setFixedChromosome(IChromosome fixedChromosome) {
+        this.fixedChromosome = fixedChromosome;
+    }
+
+    
+    
     public int getIndex() {
         return index;
     }
@@ -179,9 +194,8 @@ public class GeneticAlgorithm {
     
     //forcing the algorithm to use the biggest rail x times(in order to speed up
     //the process whilst selecting the minimum connections between rails)
-    public boolean guideRailSelection() {
+    public void guidedRailSelection() {
         int max=0,maxAmounts=0,check;
-        boolean flag=false;
         //finding the biggest rail and times that can be used
         for(int i=0;i<railSizes.size();i++){
             if(max<railSizes.get(i)){
@@ -196,7 +210,7 @@ public class GeneticAlgorithm {
         //of rails for the algorithm to choose-always 2)
         check=railLength/max;
         if(maxAmounts>=3){
-            flag=true;
+            guidedRailSelectionChecker=true;
             forcedTimesToBeUsed=maxAmounts-2;
             if(forcedTimesToBeUsed<=check-2){
                 railAmounts.set(index,maxAmounts-forcedTimesToBeUsed);
@@ -210,7 +224,7 @@ public class GeneticAlgorithm {
                 railLength-=lengthOfMyUsedRails;
             }
         }
-        return flag;
+        //return guidedRailSelectionChecker;
     }
     
     
@@ -218,7 +232,7 @@ public class GeneticAlgorithm {
     
     
     public void evolve(){
-        Configuration gaConf = new MyConfiguration(selection);
+        gaConf = new MyConfiguration(selection);
         
         myFitnessFunction = new MyFitnessFunction(this.railLength);
         try {
@@ -246,13 +260,27 @@ public class GeneticAlgorithm {
             for(int i=0;i<generationLimit;i++){
                 population.evolve();
             }
+            
+            
             timePassed = System.currentTimeMillis() - timePassed;
             bestSolution = population.getFittestChromosome();
+            
+            //fix The Chromosome if needed
+            if(guidedRailSelectionChecker)
+                fixChromosome(index,forcedTimesToBeUsed);
         }
         catch(InvalidConfigurationException ex){
             Logger.getLogger(GeneticAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    }
+    
+    public void fixChromosome(int index, int value){
+       fixedChromosome=(IChromosome)bestSolution.clone();
+       int totalAmount=railAmounts.get(index)+value;
+       
+       //fixedChromosome.getGene(index)=new IntegerGene(gaConf,0,totalAmount);
+       fixedChromosome.getGene(index).setAllele(value);
     }
     
     
@@ -277,12 +305,15 @@ public class GeneticAlgorithm {
         return --points;
     }
     
-    public int[] getFittestChromosome(){
+    public int[] getFittestChromosomeAsIntArray(){
         int[] genes = new int[bestSolution.getGenes().length];
         for(int i=0;i<genes.length;i++){
             genes[i] = ((Integer)bestSolution.getGene(i).getAllele()).intValue();
         }
         return genes;
     }
-    
+
+    public IChromosome getBestSolution() {
+        return bestSolution;
+    }
 }
