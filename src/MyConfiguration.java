@@ -24,16 +24,16 @@ import org.jgap.impl.WeightedRouletteSelector;
  */
 public class MyConfiguration extends Configuration{
     
-    public MyConfiguration(Selection sMethod){
-        this("","",sMethod);
+    public MyConfiguration(Selection sMethod, double recChance, int mutChance){
+        this("","",sMethod,recChance,mutChance);
     }
     
-    public MyConfiguration(String id, String name, Selection sMethod){
+    public MyConfiguration(String id, String name, Selection sMethod, double recChance, int mutChance){
         super(id,name);
         try{
             setBreeder(new GABreeder());
             setRandomGenerator(new StockRandomGenerator());
-            setMonitor(new EvolutionMonitor());
+            //setMonitor(new EvolutionMonitor());
             setEventManager(new EventManager());
             if(sMethod==Selection.Tournament){
                 TournamentSelector tournamentSelector=new TournamentSelector(this,5,1);
@@ -49,8 +49,9 @@ public class MyConfiguration extends Configuration{
             setKeepPopulationSizeConstant(true);
             setFitnessEvaluator(new DefaultFitnessEvaluator());
             setChromosomePool(new ChromosomePool());
-            addGeneticOperator(new CrossoverOperator(this, 0.35d));
-            addGeneticOperator(new MutationOperator(this, 12));
+      
+            addGeneticOperator(new CrossoverOperator(this, recChance));
+            addGeneticOperator(new MutationOperator(this, mutChance));
         }
         catch(InvalidConfigurationException e){
             throw new RuntimeException();

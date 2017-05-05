@@ -15,11 +15,15 @@ import org.jgap.IChromosome;
 
 class MyFitnessFunction extends FitnessFunction {
     
-    private final int railength;
+    private int railength;
     private int totalLength,intersections;
     
     public MyFitnessFunction(int RAILLENGTH) {
         railength = RAILLENGTH;
+    }
+    
+    public void setRailLength(int raillength){
+        this.railength = raillength;
     }
     
     @Override
@@ -38,7 +42,7 @@ class MyFitnessFunction extends FitnessFunction {
 
         int lengthDiff = Math.abs(railength-totalLength);
         intersections--;
-        
+
         return (1/(lengthDiff*0.9+intersections*0.1));
     }
 }

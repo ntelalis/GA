@@ -79,7 +79,7 @@ public class Menu {
         }while(!(selection.equals("T") || selection.equals("R") || selection.equals("")));
         //}while(!(selection.equals("T") || selection.equals("R")));
         
-        System.out.print("Do you want to enable elitism?(Y / N)[N]: ");
+        System.out.print("Do you want to enable elitism?(Y / N)[Y]: ");
         String elitism;
         
         do{
@@ -89,25 +89,26 @@ public class Menu {
             else if(elitism.equals("N"))
                 ga.setElitismEnabled(false);
             else
-                ga.setElitismEnabled(false);
+                ga.setElitismEnabled(true);
             //System.out.print("Give your choice again:");
         }while(!(elitism.equals("Y") || elitism.equals("N") || elitism.equals("")));
         //}while(!(elitism.equals("Y") || elitism.equals("N")));
         
         
-        ga.evolve();
+        ga.evolve(0.7,100);
         MyFitnessFunction mff = new MyFitnessFunction(ga.getRailLength());
+        System.out.println();
+        System.out.println("Total Time="+ga.getTimePassed()+"ms");
+        System.out.println("Stopped at generation="+ga.getStoppedGeneration());
+        System.out.println("Best Solution found at generation="+(ga.getStoppedGeneration()-ga.getPercentOfChangeOperatorChance()));
         if(ga.guidedRailSelectionChecker){
-            ga.setRailLength(ga.getFittestChromosomeRailLength()+ga.getLengthOfMyUsedRails());
-            GeneticAlgorithm.setRailAmountElement(ga.getIndex(), ga.getForcedTimesToBeUsed());
-            
             mff = new MyFitnessFunction(ga.getRailLength());
-            System.out.println("Total Time="+ga.getTimePassed()+"ms");
-            System.out.println("Fitness="+ga.getBestSolution().getFitnessValue());
-            System.out.println("FitnessRecall="+((Chromosome)ga.getFixedChromosome()).getFitnessValue());
-            System.out.println("FitnessReCalculate="+mff.evaluate(ga.getBestSolution()));
+            
+            //System.out.println("Fitness="+ga.getBestSolution().getFitnessValue());
+            //System.out.println("FitnessRecall="+ga.getFixedChromosome().getFitnessValue());
+            System.out.println("Fitness="+mff.evaluate(ga.getFixedChromosome()));
             System.out.println("Total Length="+ga.getRailLength());
-            System.out.println("Intersections="+(ga.getFittestChromosomeRailPoints()+ga.getForcedTimesToBeUsed()));
+            System.out.println("Intersections="+(ga.getChromosomeRailPoints(ga.getFixedChromosome())));
             System.out.print("Chromosome=[ ");
             for(int i=0;i<ga.getFittestChromosomeAsIntArray().length;i++){
                 if(i==ga.getIndex()){
@@ -120,12 +121,11 @@ public class Menu {
             System.out.println("]");
         }
         else{
-            System.out.println("Total Time="+ga.getTimePassed()+"ms");
             System.out.println("Fitness="+ga.getFittestChromosomeFitness());
-            System.out.println("Fitness="+ga.getBestSolution().getFitnessValue());
-            System.out.println("FitnessReCalculate="+mff.evaluate(ga.getBestSolution()));
-            System.out.println("Total Length="+ga.getFittestChromosomeRailLength());
-            System.out.println("Intersections="+(ga.getFittestChromosomeRailPoints()));
+            //System.out.println("Fitness="+ga.getBestSolution().getFitnessValue());
+            //System.out.println("FitnessReCalculate="+mff.evaluate(ga.getBestSolution()));
+            System.out.println("Total Length="+ga.getChromosomeRailLength(ga.getBestSolution()));
+            System.out.println("Intersections="+(ga.getChromosomeRailPoints(ga.getBestSolution())));
             System.out.print("Chromosome=[ ");
             for(int i=0;i<ga.getFittestChromosomeAsIntArray().length;i++){
                 System.out.print(ga.getFittestChromosomeAsIntArray()[i]+" ");
