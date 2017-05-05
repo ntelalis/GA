@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jgap.impl.CrossoverOperator;
 import org.jgap.impl.IntegerGene;
+import org.jgap.impl.MutationOperator;
 
 
 
@@ -31,6 +33,11 @@ public class GeneticAlgorithm {
     private Selection selection = Selection.Roulette;
     private int mutationChance;
     private int recombinationChance;
+    private double maxFitness=-1;
+    private int noImprovementGenerations=0;
+    private int percentOfChangeOperatorChance;
+
+    
     
     //Problem variables
     private int railLength;
@@ -43,6 +50,7 @@ public class GeneticAlgorithm {
     private int index=0;
     private int lengthOfMyUsedRails=0;
     private int forcedTimesToBeUsed;
+
     
     public GeneticAlgorithm(String fileToLoad){
         
@@ -67,6 +75,14 @@ public class GeneticAlgorithm {
         }
     }
 
+    public int getPercentOfChangeOperatorChance() {
+        return percentOfChangeOperatorChance;
+    }
+
+    public void setPercentOfChangeOperatorChance(int percentOfChangeOperatorChance) {
+        this.percentOfChangeOperatorChance = percentOfChangeOperatorChance;
+    }
+    
     public int getIndex() {
         return index;
     }
@@ -244,10 +260,16 @@ public class GeneticAlgorithm {
             
             timePassed = System.currentTimeMillis();
             for(int i=0;i<generationLimit;i++){
-                population.evolve();
+                population.evolve(gaConf.getMonitor());
+                if(maxFitness<population.getFittestChromosome().getFitnessValue()){
+                    maxFitness = population.getFittestChromosome().getFitnessValue();
+                }
+                
+                
             }
             timePassed = System.currentTimeMillis() - timePassed;
             bestSolution = population.getFittestChromosome();
+            System.out.println(((CrossoverOperator)population.getConfiguration().getGeneticOperators().get(0)).getCrossOverRate());
         }
         catch(InvalidConfigurationException ex){
             Logger.getLogger(GeneticAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
@@ -283,6 +305,19 @@ public class GeneticAlgorithm {
             genes[i] = ((Integer)bestSolution.getGene(i).getAllele()).intValue();
         }
         return genes;
+    }
+    
+    private void asdfg(double fitness){
+        noImprovementGenerations++;
+        if(maxFitness<fitness){
+            maxFitness = fitness;
+            noImprovementGenerations=0;
+        }
+        
+        if(noImprovementGenerations>(int)generationLimit/percentOfChangeOperatorChance){
+            
+        }
+        
     }
     
 }
