@@ -41,7 +41,7 @@ public class GeneticAlgorithm {
     private int mutChance=1000;
     private double recChance=0.8d;
     //Problem variables
-    private int railLength,origrailLength;
+    private int railLength,origrailLength=0;
     private static ArrayList<Integer> railSizes,railAmounts,origrailAmounts;
     private String fileToLoad;
     private long timePassed=0;
@@ -236,6 +236,7 @@ public class GeneticAlgorithm {
     //forcing the algorithm to use the biggest rail x times(in order to speed up
     //the process whilst selecting the minimum connections between rails)
     public void guidedRailSelection() {
+        guidedRailSelectionChecker=false;
         int max=0,maxAmounts=0,check;
         //finding the biggest rail and times that can be used
         for(int i=0;i<railSizes.size();i++){
@@ -245,6 +246,9 @@ public class GeneticAlgorithm {
                 index=i;
             }
         }
+        
+       
+        
         //check:how many times I could use the biggest rail
         //forcedTimesToBeUsed:the times I choose to use the rail(therefore
         //I remove from the available maxAmount. I leave the remaining amount
@@ -261,13 +265,16 @@ public class GeneticAlgorithm {
                 railAmounts.set(index,maxAmounts-forcedTimesToBeUsed);
                 lengthOfMyUsedRails=forcedTimesToBeUsed*max;
                 railLength-=lengthOfMyUsedRails;
+                System.out.println("_________!____________"+"\n"+"RailLength in guidedRailSelection() "+railLength+"\n"+"__________!_________");
             }
             else{
                 forcedTimesToBeUsed=check-2;
                 railAmounts.set(index,maxAmounts-forcedTimesToBeUsed);
                 lengthOfMyUsedRails=forcedTimesToBeUsed*max;
                 railLength-=lengthOfMyUsedRails;
+                System.out.println("__________!___________"+"\n"+"RailLength in guidedRailSelection() "+railLength+"\n"+"__________!_________");
             }
+            //origrailLength=railLength;
         }
         //return guidedRailSelectionChecker;
     }
@@ -296,6 +303,7 @@ public class GeneticAlgorithm {
                 gaConf.setPreservFittestIndividual(true);
             Gene[] genes = new Gene[railAmounts.size()];
             
+            
             for(int i=0;i<railAmounts.size();i++){
                 genes[i] = new IntegerGene(gaConf,0,railAmounts.get(i));
             }
@@ -303,6 +311,7 @@ public class GeneticAlgorithm {
             gaConf.setSampleChromosome(myChromosome);
             gaConf.setPopulationSize(populationSize);
         }
+
         population = Genotype.randomInitialGenotype(gaConf);
         
         timePassed = System.currentTimeMillis();
@@ -323,13 +332,14 @@ public class GeneticAlgorithm {
         
         timePassed = System.currentTimeMillis() - timePassed;
         bestSolution = population.getFittestChromosome();
-        
+        System.out.println("______________________"+"\n"+"RailLength in evolve[before fixation]:"+railLength+"\n"+"____________________");
         //fix The Chromosome if needed
         if(guidedRailSelectionChecker){
             fixChromosome(index,forcedTimesToBeUsed);
             
             railLength=(getChromosomeRailLength(bestSolution)+lengthOfMyUsedRails);
-            System.out.println(railLength);
+            //System.out.println("(2)railLength in evolve: "+railLength);
+            System.out.println("______________________"+"\n"+"(1)RailLength in evolve[after fixation] :"+railLength+"\n"+"____________________");
             myFitnessFunction.setRailLength(railLength);
         }
         
@@ -339,7 +349,7 @@ public class GeneticAlgorithm {
         fixedChromosome=(IChromosome)bestSolution.clone();
         int totalAmount=((Integer)fixedChromosome.getGene(index).getAllele()).intValue()+value;
         fixedChromosome.getGenes()[index] = new IntegerGene(gaConf,0,totalAmount);
-        
+        railAmounts.set(index, railAmounts.get(index)+value);
         fixedChromosome.getGene(index).setAllele(totalAmount);
         
         //fixedChromosome.setFitnessValue(myFitnessFunction.evaluate(fixedChromosome));

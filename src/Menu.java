@@ -125,9 +125,11 @@ public class Menu {
         catch(NumberFormatException e){
             mutChance = 500;
         }
-        for(int i=0;i<1000;i++){
+        for(int i=0;i<10;i++){
             //TimeUnit.SECONDS.sleep(1);
+            System.out.println("______________________"+"\n"+"(0)RailLength before evovle [in loop]:"+i+" "+ga.getRailLength()+"\n"+"____________________");
             ga.evolve(recChance,mutChance);
+            System.out.println("______________________"+"\n"+"(2)RailLength after evovle()[in loop]:"+i+" "+ga.getRailLength()+"\n"+"____________________");
             
             MyFitnessFunction mff = new MyFitnessFunction(ga.getRailLength());
             String evolutionRunString="";
@@ -164,6 +166,7 @@ public class Menu {
                 System.out.println("]");
                 //ga.recoverValues();
                 ga.guidedRailSelection();
+                System.out.println("______________________"+"\n"+"(3)RailLength after guidedRailSelection()[in loop]:"+i+" "+ga.getRailLength()+"\n"+"_________________________________________");
             }
             else{
                 System.out.println("Fitness="+df.format(ga.getFittestChromosomeFitness()));

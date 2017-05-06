@@ -43,6 +43,8 @@ class MyFitnessFunction extends FitnessFunction {
         int lengthDiff = Math.abs(railength-totalLength);
         intersections--;
 
+        
+        
         return (1/(lengthDiff*0.9+intersections*0.1));
     }
 }
